@@ -1,0 +1,16 @@
+# Default values for ..
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: shanepeckham/captureorderack
+  tag: v8
+  pullPolicy: IfNotPresent
+service:
+  type: LoadBalancer
+  externalPort: 80
+# teamname:
+# mongodb:
+#   connectionString:
+# amqp:
+#   connectionString: 

@@ -1,0 +1,16 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  labels:
+    app: {{ template "azure-file-storageclass.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "azure-file-storageclass.fullname" . }}
+parameters:
+  location: {{ .Values.location }}
+  skuName: {{ .Values.skuName }}
+  storageAccount: {{ .Values.storageAccount }}
+provisioner: kubernetes.io/azure-file
+reclaimPolicy: Delete

@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "azure-fulfil-order.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "azure-fulfil-order.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "azure-fulfil-order.name" . }}
+        component: "{{ .Values.name }}"
+        release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+        {{- end }}
+    spec:
+      volumes:
+      - name: orders
+        persistentVolumeClaim:
+          claimName: {{ template "azure-fulfil-order.fullname" . }}
+      containers:
+        - name: {{ template "azure-fulfil-order.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+          {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          env:
+          - name: TEAMNAME
+            value: {{ .Values.teamname }}
+          - name: MONGOHOST
+            value: {{ .Values.mongodb.connectionString }}
+          volumeMounts:
+          - name: orders
+            mountPath: /orders
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: 60
