@@ -11,11 +11,6 @@ azure-file-storageclass:
 		--set skuName=Standard_LRS \
 		--set storageAccount=orderstack 
 
-.PHONY: mongodb
-mongodb:
-	helm upgrade --install $@ stable/mongodb \
-		--namespace $(NAMESPACE)
-
 .PHONY: azure-cosmosdb-mongo
 azure-cosmosdb-mongo:
 	helm upgrade --install $@ $@ \
@@ -30,12 +25,12 @@ amqp:
 		--set rabbitmqPassword=admin
 	
 .PHONY: azure-capture-order
-azure-capture-order: amqp mongodb
+azure-capture-order: # amqp azure-cosmosdb-mongo
 	helm upgrade --install $@ $@ \
 		--namespace $(NAMESPACE) \
 		--set teamname=$(TEAMNAME) \
-		--set "mongodb.connectionString=mongodb://mongodb-mongodb/k8orders" \
-		--set "amqp.connectionString=amqp://admin:admin@amqp-rabbitmq"
+		--set "amqp.connectionString=amqp://admin:admin@amqp-rabbitmq" \
+		--set "secrets.mongodb=azure-cosmosdb-mongo-azure-cosmosdb-mongo"
 
 .PHONY: azure-event-lister
 azure-event-lister: amqp azure-fulfil-order
@@ -46,12 +41,12 @@ azure-event-lister: amqp azure-fulfil-order
 		--set "amqp.connectionString=amqp://admin:admin@amqp-rabbitmq"
 
 .PHONY: azure-fulfil-order
-azure-fulfil-order: mongodb azure-file-storageclass
+azure-fulfil-order: # azure-cosmosdb-mongo azure-file-storageclass
 	helm upgrade --install $@ $@ \
 		--namespace $(NAMESPACE) \
 		--set teamname=$(TEAMNAME) \
-		--set "mongodb.connectionString=mongodb://mongodb-mongodb/k8orders" \
-		--set "storage.class=azure-file-storageclass-azure-file-storageclass"
+		--set "storage.class=azure-file-storageclass-azure-file-storageclass" \
+		--set "secrets.mongodb=azure-cosmosdb-mongo-azure-cosmosdb-mongo"
 
 .PHONY: destroy
 destroy:

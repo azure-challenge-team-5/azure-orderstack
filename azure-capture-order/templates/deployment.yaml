@@ -41,7 +41,14 @@ spec:
           - name: TEAMNAME
             value: {{ .Values.teamname }}
           - name: MONGOHOST
+            {{- if .Values.secrets.mongodb }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secrets.mongodb }}
+                key: connectionString
+            {{- else }}
             value: {{ .Values.mongodb.connectionString }}
+            {{- end }}
           - name: RABBITMQHOST
             value: {{ .Values.amqp.connectionString }}
           ports:

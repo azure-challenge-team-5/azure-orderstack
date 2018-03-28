@@ -45,7 +45,14 @@ spec:
           - name: TEAMNAME
             value: {{ .Values.teamname }}
           - name: MONGOHOST
+            {{- if .Values.secrets.mongodb }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secrets.mongodb }}
+                key: connectionString
+            {{- else }}
             value: {{ .Values.mongodb.connectionString }}
+            {{- end }}
           volumeMounts:
           - name: orders
             mountPath: /orders

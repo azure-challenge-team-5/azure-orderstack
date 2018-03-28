@@ -14,3 +14,7 @@ service:
 #   connectionString:
 # amqp:
 #   connectionString: 
+
+secrets: {}
+# secrets:
+#   mongodb: 
