@@ -10,11 +10,11 @@ service:
   type: LoadBalancer
   externalPort: 80
 # teamname:
-# mongodb:
-#   connectionString:
+mongodb:
+  connectionString: mongodb://sbgcosmos:PlfQRWtpVPFQPC7mdW8XTCJp7C1xpTnrLXn6AmPFsc2GPjl4dZVVi9tRzxs1CP4f7XA1gMyluO4fx4YC4CC5GQ==@sbgcosmos.documents.azure.com:10255/k8orders?ssl=true&replicaSet=globaldb
 # amqp:
-#   connectionString: 
+#   connectionString:
 
 secrets: {}
 # secrets:
-#   mongodb: 
+#   mongodb:

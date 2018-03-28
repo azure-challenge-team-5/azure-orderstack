@@ -13,8 +13,8 @@ storage:
   size: 1Gi
   # class:
 # teamname:
-# mongodb:
-#   connectionString: 
+mongodb:
+  connectionString: mongodb://sbgcosmos:PlfQRWtpVPFQPC7mdW8XTCJp7C1xpTnrLXn6AmPFsc2GPjl4dZVVi9tRzxs1CP4f7XA1gMyluO4fx4YC4CC5GQ==@sbgcosmos.documents.azure.com:10255/k8orders?ssl=true&replicaSet=globaldb
 secrets: {}
 # secrets:
-#   mongodb: 
+#   mongodb:
