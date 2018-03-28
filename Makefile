@@ -16,6 +16,12 @@ mongodb:
 	helm upgrade --install $@ stable/mongodb \
 		--namespace $(NAMESPACE)
 
+.PHONY: azure-cosmosdb-mongo
+azure-cosmosdb-mongo:
+	helm upgrade --install $@ $@ \
+		--namespace $(NAMESPACE) \
+		--set "location=eastus"
+
 .PHONY: amqp
 amqp:
 	helm upgrade --install $@ stable/rabbitmq \

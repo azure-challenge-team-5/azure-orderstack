@@ -1,0 +1,19 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceInstance
+metadata:
+  name: {{ template "azure-cosmosdb-mongo.fullname" . }}
+  labels:
+    app: {{ template "azure-cosmosdb-mongo.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterServiceClassExternalName:  azure-cosmos-mongo-db
+  clusterServicePlanExternalName: {{ .Values.servicePlan }}
+  parameters:
+    location: {{ .Values.location }}
+    resourceGroup: {{ .Release.Namespace }}
+    firewallRules:
+    - startIPAddress: "0.0.0.0"
+      endIPAddress: "255.255.255.255"
+      name: "AllowAll"
